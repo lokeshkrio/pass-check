@@ -15,6 +15,7 @@ LEETSPEAK_MAP = {
     "+": ["t"],
 }
 
+
 class LeetspeakNormalizer:
     def analyze(self, context: AnalysisContext) -> None:
         if not context.password:
@@ -22,7 +23,7 @@ class LeetspeakNormalizer:
 
         normalized = ""
         substituted = False
-        
+
         for char in context.password:
             if char in LEETSPEAK_MAP:
                 # To keep it simple, we just take the first standard character mapped
@@ -30,7 +31,7 @@ class LeetspeakNormalizer:
                 substituted = True
             else:
                 normalized += char
-                
+
         if substituted:
             if normalized not in context.normalized_passwords:
                 context.normalized_passwords.append(normalized)

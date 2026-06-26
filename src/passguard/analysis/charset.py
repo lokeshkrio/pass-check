@@ -10,7 +10,6 @@ from passguard.models import CharacterAnalysis
 
 
 class CharacterAnalyzer:
-
     def analyze(self, context: AnalysisContext) -> None:
 
         password = context.password
@@ -23,7 +22,6 @@ class CharacterAnalyzer:
         unicode_chars = 0
 
         for ch in password:
-
             if ch in LOWERCASE:
                 lowercase += 1
 

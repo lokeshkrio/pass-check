@@ -14,7 +14,6 @@ from passguard.models import PasswordReport
 
 
 class PasswordAnalyzer:
-
     def __init__(
         self,
         dictionary_provider: DictionaryProvider | None = None,

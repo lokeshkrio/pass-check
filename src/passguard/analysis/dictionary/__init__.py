@@ -1,6 +1,11 @@
 from passguard.analysis.dictionary.analyzer import DictionaryAnalyzer
 from passguard.analysis.dictionary.models import DictionaryMatchResult
-from passguard.analysis.dictionary.provider import DictionaryProvider, BuiltinDictionaryProvider, FileDictionaryProvider, SetDictionaryProvider
+from passguard.analysis.dictionary.provider import (
+    DictionaryProvider,
+    BuiltinDictionaryProvider,
+    FileDictionaryProvider,
+    SetDictionaryProvider,
+)
 
 __all__ = [
     "DictionaryAnalyzer",
@@ -8,5 +13,5 @@ __all__ = [
     "DictionaryProvider",
     "BuiltinDictionaryProvider",
     "FileDictionaryProvider",
-    "SetDictionaryProvider"
+    "SetDictionaryProvider",
 ]

@@ -1,52 +1,57 @@
 from passguard.context import AnalysisContext
-from passguard.analysis.pattern.models import PatternFinding, PatternSeverity, PatternType
+from passguard.analysis.pattern.models import (
+    PatternFinding,
+    PatternSeverity,
+    PatternType,
+)
 
 
 # Adjacency map for standard QWERTY keyboard
 QWERTY_MAP = {
-    '1': '2q',
-    '2': '13qw',
-    '3': '24we',
-    '4': '35er',
-    '5': '46rt',
-    '6': '57ty',
-    '7': '68yu',
-    '8': '79ui',
-    '9': '80io',
-    '0': '9-op',
-    '-': '0=p[',
-    '=': '-[',
-    'q': '12wa',
-    'w': '23qeas',
-    'e': '34wrsd',
-    'r': '45etdf',
-    't': '56ryfg',
-    'y': '67tugh',
-    'u': '78yihj',
-    'i': '89uojk',
-    'o': '90ipkl',
-    'p': '0-o[l;',
-    '[': '-=p\';',
-    ']': '=\\',
-    'a': 'qwsz',
-    's': 'weadxz',
-    'd': 'ersfxc',
-    'f': 'rtdgcv',
-    'g': 'tyfhvb',
-    'h': 'yugjbn',
-    'j': 'uihknm',
-    'k': 'iojl',
-    'l': 'opk;',
-    ';': 'p[l\'',
-    '\'': '[;',
-    'z': 'asx',
-    'x': 'sdzc',
-    'c': 'dfxv',
-    'v': 'fgcb',
-    'b': 'ghvn',
-    'n': 'hjbm',
-    'm': 'jkn',
+    "1": "2q",
+    "2": "13qw",
+    "3": "24we",
+    "4": "35er",
+    "5": "46rt",
+    "6": "57ty",
+    "7": "68yu",
+    "8": "79ui",
+    "9": "80io",
+    "0": "9-op",
+    "-": "0=p[",
+    "=": "-[",
+    "q": "12wa",
+    "w": "23qeas",
+    "e": "34wrsd",
+    "r": "45etdf",
+    "t": "56ryfg",
+    "y": "67tugh",
+    "u": "78yihj",
+    "i": "89uojk",
+    "o": "90ipkl",
+    "p": "0-o[l;",
+    "[": "-=p';",
+    "]": "=\\",
+    "a": "qwsz",
+    "s": "weadxz",
+    "d": "ersfxc",
+    "f": "rtdgcv",
+    "g": "tyfhvb",
+    "h": "yugjbn",
+    "j": "uihknm",
+    "k": "iojl",
+    "l": "opk;",
+    ";": "p[l'",
+    "'": "[;",
+    "z": "asx",
+    "x": "sdzc",
+    "c": "dfxv",
+    "v": "fgcb",
+    "b": "ghvn",
+    "n": "hjbm",
+    "m": "jkn",
 }
+
 
 class KeyboardWalkDetector:
     def __init__(self) -> None:
@@ -72,7 +77,9 @@ class KeyboardWalkDetector:
 
         self._evaluate(context, pwd, walk_start, len(pwd))
 
-    def _evaluate(self, context: AnalysisContext, pwd: str, start: int, end: int) -> None:
+    def _evaluate(
+        self, context: AnalysisContext, pwd: str, start: int, end: int
+    ) -> None:
         length = end - start
         if length >= self.min_length:
             walk_str = context.password[start:end]
@@ -89,6 +96,6 @@ class KeyboardWalkDetector:
                     severity=severity,
                     start=start,
                     end=end,
-                    description=f"Keyboard walk pattern '{walk_str}' found."
+                    description=f"Keyboard walk pattern '{walk_str}' found.",
                 )
             )

@@ -3,8 +3,7 @@ import pathlib
 
 
 class DictionaryProvider(Protocol):
-    def words(self) -> Collection[str]:
-        ...
+    def words(self) -> Collection[str]: ...
 
 
 class SetDictionaryProvider:
@@ -31,5 +30,9 @@ class FileDictionaryProvider:
 
 class BuiltinDictionaryProvider(FileDictionaryProvider):
     def __init__(self) -> None:
-        builtin_path = pathlib.Path(__file__).parent.parent.parent / "data" / "common_passwords.txt"
+        builtin_path = (
+            pathlib.Path(__file__).parent.parent.parent
+            / "data"
+            / "common_passwords.txt"
+        )
         super().__init__(builtin_path)

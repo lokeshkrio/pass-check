@@ -6,7 +6,6 @@ from passguard.models import EntropyResult
 
 
 class EntropyAnalyzer:
-
     def analyze(self, context: AnalysisContext) -> None:
 
         chars = context.characters

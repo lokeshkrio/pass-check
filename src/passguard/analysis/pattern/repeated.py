@@ -7,10 +7,9 @@ from passguard.context import AnalysisContext
 
 
 class RepeatedCharacterDetector:
-
     def analyze(self, context: AnalysisContext) -> None:
         password = context.password
-        
+
         if not password:
             return
 
@@ -23,7 +22,7 @@ class RepeatedCharacterDetector:
                 length += 1
             else:
                 self._evaluate_sequence(context, current_char, start_index, i, length)
-                
+
                 # Reset for the new character
                 current_char = password[i]
                 start_index = i
@@ -42,7 +41,7 @@ class RepeatedCharacterDetector:
         end_index: int,
         length: int,
     ) -> None:
-        
+
         if length > 2:
             if length == 3:
                 severity = PatternSeverity.LOW
@@ -56,11 +55,9 @@ class RepeatedCharacterDetector:
                 severity=severity,
                 start=start_index,
                 end=end_index,
-                description=(
-                    f"Repeated character '{char}' found {length} times."
-                ),
+                description=(f"Repeated character '{char}' found {length} times."),
             )
-            
+
             context.patterns.append(finding)
 
 

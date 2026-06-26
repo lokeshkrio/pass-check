@@ -1,5 +1,9 @@
 from passguard.context import AnalysisContext
-from passguard.analysis.pattern.models import PatternFinding, PatternSeverity, PatternType
+from passguard.analysis.pattern.models import (
+    PatternFinding,
+    PatternSeverity,
+    PatternType,
+)
 
 
 class SequenceDetector:
@@ -34,7 +38,9 @@ class SequenceDetector:
         if seq_dir != 0:
             self._evaluate(context, pwd, seq_start, len(pwd))
 
-    def _evaluate(self, context: AnalysisContext, pwd: str, start: int, end: int) -> None:
+    def _evaluate(
+        self, context: AnalysisContext, pwd: str, start: int, end: int
+    ) -> None:
         length = end - start
         if length >= self.min_length:
             seq_str = context.password[start:end]
@@ -48,10 +54,12 @@ class SequenceDetector:
 
             context.patterns.append(
                 PatternFinding(
-                    type=PatternType.SEQUENTIAL_DIGITS if is_digit else PatternType.SEQUENTIAL_LETTERS,
+                    type=PatternType.SEQUENTIAL_DIGITS
+                    if is_digit
+                    else PatternType.SEQUENTIAL_LETTERS,
                     severity=severity,
                     start=start,
                     end=end,
-                    description=f"Sequential characters '{seq_str}' found."
+                    description=f"Sequential characters '{seq_str}' found.",
                 )
             )

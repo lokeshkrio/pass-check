@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True, slots=True)
 class AttackProfile:
     name: str
     guesses_per_second: int
+
 
 ONLINE_THROTTLED = AttackProfile("Online throttled", 10)
 ONLINE_UNTHROTTLED = AttackProfile("Online unthrottled", 1_000)

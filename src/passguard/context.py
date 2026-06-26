@@ -5,7 +5,12 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from passguard.analysis.pattern.models import PatternFinding
     from passguard.analysis.dictionary.models import DictionaryMatchResult
-    from passguard.models import CharacterAnalysis, EntropyResult, ScoreResult, Recommendation
+    from passguard.models import (
+        CharacterAnalysis,
+        EntropyResult,
+        ScoreResult,
+        Recommendation,
+    )
 
 
 @dataclass(slots=True)

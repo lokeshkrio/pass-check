@@ -8,7 +8,6 @@ from passguard.context import AnalysisContext
 
 
 class PatternAnalyzer:
-
     def __init__(self) -> None:
         self.repeated = RepeatedCharacterDetector()
         self.repeated_substrings = RepeatedSubstringDetector()
