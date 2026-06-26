@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from passguard.analysis.pattern.models import PatternResult
-
+from passguard.analysis.dictionary.models import DictionaryMatchResult
 
 
 @dataclass(slots=True, frozen=True)
@@ -44,6 +44,9 @@ class PasswordReport:
 
     recommendations: list[Recommendation]
     patterns: PatternResult | None = None
+    dictionary_matches: list[DictionaryMatchResult] = field(default_factory=list)
+    crack_times: dict[str, float] = field(default_factory=dict)
+
 
 class Strength(Enum):
     VERY_WEAK = "Very Weak"

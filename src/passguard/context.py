@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from passguard.analysis.pattern.models import PatternFinding
-from passguard.models import CharacterAnalysis, EntropyResult, ScoreResult
+from passguard.analysis.dictionary.models import DictionaryMatchResult
+from passguard.models import CharacterAnalysis, EntropyResult, ScoreResult, Recommendation
 
 
 @dataclass(slots=True)
@@ -12,6 +13,10 @@ class AnalysisContext:
     score: ScoreResult | None = None
     patterns: list[PatternFinding] = field(default_factory=list)
     pattern_penalty_bits: float = 0.0
+    normalized_passwords: list[str] = field(default_factory=list)
+    dictionary_matches: list[DictionaryMatchResult] = field(default_factory=list)
+    crack_times: dict[str, float] = field(default_factory=dict)
+    recommendations: list[Recommendation] = field(default_factory=list)
 
     def require_characters(self) -> CharacterAnalysis:
         if self.characters is None:
