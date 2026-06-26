@@ -9,7 +9,7 @@ from passguard.models import PasswordReport
 
 class PasswordAnalyzer:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.character = CharacterAnalyzer()
         self.entropy = EntropyAnalyzer()
         self.pattern = PatternAnalyzer()
