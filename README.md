@@ -36,7 +36,33 @@ Planned:
 - Password policy validation
 - Exportable reports
 - Breach detection through Have I Been Pwned
-- AI explanations later
+
+## Pipeline Flow
+
+```text
+Password
+    │
+    ▼
+Character Analyzer
+    │
+    ▼
+Entropy Analyzer
+    │
+    ▼
+Pattern Analyzer
+    │
+    ▼
+Dictionary Analyzer
+    │
+    ▼
+Effective Entropy
+    │
+    ▼
+Scoring
+    │
+    ▼
+Recommendations
+```
 
 ## Requirements
 
