@@ -22,10 +22,10 @@ keywords = ["password", "strength", "entropy", "security", "analyzer"]
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/lokeshkrio/pass-check"
-Documentation = "https://github.com/lokeshkrio/pass-check/blob/main/docs.md"
-Repository = "https://github.com/lokeshkrio/pass-check"
-"Bug Tracker" = "https://github.com/lokeshkrio/pass-check/issues"
+Homepage = "https://github.com/lokeshkrio/PassGuard"
+Documentation = "https://github.com/lokeshkrio/PassGuard/blob/main/docs.md"
+Repository = "https://github.com/lokeshkrio/PassGuard"
+"Bug Tracker" = "https://github.com/lokeshkrio/PassGuard/issues"
 
 [dependency-groups]
 dev = [

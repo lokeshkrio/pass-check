@@ -10,7 +10,7 @@ Unlike traditional libraries that wrap external estimators (like `zxcvbn`), Pass
 
 PassGuard is designed around three main principles:
 1. **Unwrapped First-Principles Estimation:** The algorithms are built directly into the library rather than calling external executables or complex opaque heuristics.
-2. **Pipelines and Mutating Context:** The analysis executes as a sequence of distinct analyzers. State is shared via a single, mutable [AnalysisContext](file:///d:/LK/py/password-analyser/src/passguard/context.py) object, ensuring that state transitions are explicit and analyzers remain decoupled.
+2. **Pipelines and Mutating Context:** The analysis executes as a sequence of distinct analyzers. State is shared via a single, mutable [AnalysisContext](file:///d:/LK/py/PassGuard/src/passguard/context.py) object, ensuring that state transitions are explicit and analyzers remain decoupled.
 3. **Theoretical vs. Effective Entropy:** Real-world passwords rarely follow random character selection. PassGuard separates what a password *could* be (theoretical entropy based on character sets) from what it *actually* is when accounting for human-generated patterns (effective entropy).
 
 ```
@@ -51,10 +51,10 @@ PassGuard is designed around three main principles:
 
 ## 2. Pipeline Analyzers & Algorithms
 
-Below is a detailed breakdown of the execution pipeline of [PasswordAnalyzer](file:///d:/LK/py/password-analyser/src/passguard/analyzer.py):
+Below is a detailed breakdown of the execution pipeline of [PasswordAnalyzer](file:///d:/LK/py/PassGuard/src/passguard/analyzer.py):
 
 ### 2.1 Character Analysis (`CharacterAnalyzer`)
-Located in [charset.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/charset.py), this step inspects every character in the password and groups them into character classes:
+Located in [charset.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/charset.py), this step inspects every character in the password and groups them into character classes:
 * **Lowercase:** `a-z`
 * **Uppercase:** `A-Z`
 * **Digits:** `0-9`
@@ -63,7 +63,7 @@ Located in [charset.py](file:///d:/LK/py/password-analyser/src/passguard/analysi
 * **Unicode:** Non-ASCII or multi-byte characters.
 
 ### 2.2 Theoretical Entropy Calculation (`EntropyAnalyzer`)
-Located in [entropy.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/entropy.py), this estimates the theoretical entropy under the assumption of random, independent character selection.
+Located in [entropy.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/entropy.py), this estimates the theoretical entropy under the assumption of random, independent character selection.
 * **Pool Size ($H_{charset}$):** Summed based on detected classes:
   * Lowercase: $+26$
   * Uppercase: $+26$
@@ -75,23 +75,23 @@ Located in [entropy.py](file:///d:/LK/py/password-analyser/src/passguard/analysi
   *(where $L$ is the length of the password)*
 
 ### 2.3 Structural Pattern Recognition (`PatternAnalyzer`)
-Located in the [pattern](file:///d:/LK/py/password-analyser/src/passguard/analysis/pattern/) directory, this coordinator runs four specialized detectors that append findings to `context.patterns`:
+Located in the [pattern](file:///d:/LK/py/PassGuard/src/passguard/analysis/pattern/) directory, this coordinator runs four specialized detectors that append findings to `context.patterns`:
 1. **Repeated Character Detector:** Identifies contiguous blocks of the same character (e.g., `aaaa`). Runs of length 1 or 2 are ignored to avoid flagging common dictionary words (e.g., `look`).
 2. **Repeated Substring Detector:** Identifies contiguous repeats of multi-character blocks (e.g., `abcabc` has a unit size of 3 and repeats 2 times). It searches for the smallest repeating unit dynamically.
 3. **Sequence Detector:** Scans for alphabetic or numeric runs that increment or decrement by a step of $1$ ASCII/Unicode value (e.g., `12345`, `fedc`). Minimum matching length is 3.
 4. **Keyboard Walk Detector:** Matches contiguous characters following standard spatial key adjacencies on a QWERTY keyboard map (e.g., `qwerty`, `asdfg`, `zxcv`).
 
 ### 2.4 Mutation & Normalization (`LeetspeakNormalizer`)
-Located in [mutations.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/mutations.py), this component maps common leetspeak substitutions (e.g., `@` $\rightarrow$ `a`, `0` $\rightarrow$ `o`, `$` $\rightarrow$ `s`, `1` $\rightarrow$ `i`/`l`) to a standardized form. If mutations are found, it generates a list of candidate plaintexts and appends them to `context.normalized_passwords` for dictionary scanning.
+Located in [mutations.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/mutations.py), this component maps common leetspeak substitutions (e.g., `@` $\rightarrow$ `a`, `0` $\rightarrow$ `o`, `$` $\rightarrow$ `s`, `1` $\rightarrow$ `i`/`l`) to a standardized form. If mutations are found, it generates a list of candidate plaintexts and appends them to `context.normalized_passwords` for dictionary scanning.
 
 ### 2.5 Dictionary Matching (`DictionaryAnalyzer`)
-Located in the [dictionary](file:///d:/LK/py/password-analyser/src/passguard/analysis/dictionary/) directory, this scans both the original password and mutated candidates against a dictionary list.
+Located in the [dictionary](file:///d:/LK/py/PassGuard/src/passguard/analysis/dictionary/) directory, this scans both the original password and mutated candidates against a dictionary list.
 * It checks for both **exact matches** and **substring matches** (for substrings of length $\ge 3$).
 * **Complexity**: It runs in $O(L^2)$ time complexity relative to the password length $L$ to slice substring candidates, performing an $O(1)$ set lookup check against the loaded dictionary wordlist.
-* It uses a pluggable [DictionaryProvider](file:///d:/LK/py/password-analyser/src/passguard/analysis/dictionary/provider.py) architecture, allowing set-based, file-based, or built-in dictionary checks (which default to a built-in top 1000 common passwords file).
+* It uses a pluggable [DictionaryProvider](file:///d:/LK/py/PassGuard/src/passguard/analysis/dictionary/provider.py) architecture, allowing set-based, file-based, or built-in dictionary checks (which default to a built-in top 1000 common passwords file).
 
 ### 2.6 Effective Entropy Calculation (`EffectiveEntropyAnalyzer`)
-Located in [effective_entropy.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/effective_entropy.py), this modifies the entropy bits based on structural pattern findings. To prevent double-penalizing overlapping patterns (e.g. when sequence `abc` overlaps with repeated substring `abcabcabc`), it sorts patterns by span length descending and tracks covered indices. It computes:
+Located in [effective_entropy.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/effective_entropy.py), this modifies the entropy bits based on structural pattern findings. To prevent double-penalizing overlapping patterns (e.g. when sequence `abc` overlaps with repeated substring `abcabcabc`), it sorts patterns by span length descending and tracks covered indices. It computes:
 * **Repeated Character Pattern Cost:**
   $$\text{estimated\_bits} = \log_2(H_{charset}) + \log_2(\text{run\_length})$$
 * **Repeated Substring Pattern Cost:**
@@ -105,7 +105,7 @@ Located in [effective_entropy.py](file:///d:/LK/py/password-analyser/src/passgua
   $$\text{effective\_bits} = \max(\text{theoretical\_bits} - \sum \text{penalties}, 0.0)$$
 
 ### 2.7 Score and Strength Tiering (`ScoreAnalyzer`)
-Located in [scoring.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/scoring.py), this converts the final `effective_bits` value into a standardized scale:
+Located in [scoring.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/scoring.py), this converts the final `effective_bits` value into a standardized scale:
 * **Score:** Scaled linearly up to a full score threshold of $80$ bits:
   $$\text{score} = \min\left(\left\lfloor \frac{\text{effective\_bits}}{80} \times 100 \right\rfloor, 100\right)$$
 * **Strength Thresholds:**
@@ -116,19 +116,19 @@ Located in [scoring.py](file:///d:/LK/py/password-analyser/src/passguard/analysi
   * **Very Strong:** $\ge 80$ bits of effective entropy
 
 ### 2.8 Crack Time Estimation (`CrackTimeAnalyzer`)
-Located in the [cracktime](file:///d:/LK/py/password-analyser/src/passguard/analysis/cracktime/) directory, this estimates the time required to guess the password under different attacker speeds.
+Located in the [cracktime](file:///d:/LK/py/PassGuard/src/passguard/analysis/cracktime/) directory, this estimates the time required to guess the password under different attacker speeds.
 * **Formula:**
   $$\text{expected\_guesses} = \frac{2^{\text{effective\_bits}}}{2}$$
   $$\text{seconds\_to\_crack} = \frac{\text{expected\_guesses}}{\text{guesses\_per\_second}}$$
 
 ### 2.9 Recommendation Engine (`RecommendationEngine`)
-Located in [recommendations.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/recommendations.py), this engine analyzes the combined context (short length, patterns, dictionary matches) to construct clear, actionable, deduplicated recommendations for end users.
+Located in [recommendations.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/recommendations.py), this engine analyzes the combined context (short length, patterns, dictionary matches) to construct clear, actionable, deduplicated recommendations for end users.
 
 ---
 
 ## 3. Public API & Return Types
 
-All core models returned by the library are strictly typed [dataclasses](https://docs.python.org/3/library/dataclasses.html). They are defined in [models.py](file:///d:/LK/py/password-analyser/src/passguard/models.py) and their submodules.
+All core models returned by the library are strictly typed [dataclasses](https://docs.python.org/3/library/dataclasses.html). They are defined in [models.py](file:///d:/LK/py/PassGuard/src/passguard/models.py) and their submodules.
 
 ### 3.1 Class: `PasswordAnalyzer`
 The primary entrypoint.
@@ -272,7 +272,7 @@ class AttackProfile:
     name: str
     guesses_per_second: int
 ```
-Default profiles available in [models.py](file:///d:/LK/py/password-analyser/src/passguard/analysis/cracktime/models.py):
+Default profiles available in [models.py](file:///d:/LK/py/PassGuard/src/passguard/analysis/cracktime/models.py):
 * `"Online throttled"`: 10 guesses/sec (e.g. login form with basic lockout/rate-limiting)
 * `"Online unthrottled"`: 1,000 guesses/sec (e.g. login form with poor rate-limiting)
 * `"Offline slow hash"`: 10,000 guesses/sec (e.g. strong hash algorithms like bcrypt/scrypt)
@@ -348,6 +348,6 @@ for profile_name, seconds in report.crack_times.items():
 To extend PassGuard with a custom analyzer step:
 1. Define a focused dataclass representation inside a module if new structured findings are needed.
 2. Create an analyzer class defining an `analyze(self, context: AnalysisContext) -> None` method.
-3. Update [AnalysisContext](file:///d:/LK/py/password-analyser/src/passguard/context.py) to declare fields for storing results of the analyzer.
+3. Update [AnalysisContext](file:///d:/LK/py/PassGuard/src/passguard/context.py) to declare fields for storing results of the analyzer.
 4. Add the analyzer instance inside `PasswordAnalyzer.__init__` and call it at the desired position inside `PasswordAnalyzer.analyze()`.
 5. Run unit tests using `pytest` to verify the pipeline flow remains correct.
